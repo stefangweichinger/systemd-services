@@ -1,0 +1,20 @@
+#!/bin/sh
+# 
+# helper-script for vmware.service
+# put this to /usr/local/bin/vmware
+# or adjust the path in vmware.service accordingly
+
+case "${1}" in
+start)
+#start-stop-daemon --start --exec /opt/vmware/bin/vmware-usbarbitrator
+/opt/vmware/bin/vmware-usbarbitrator 
+modprobe -a vmmon vmci vsock vmblock vmnet 
+/opt/vmware/bin/vmware-networks --start
+;;
+stop)
+#start-stop-daemon --stop --exec /opt/vmware/bin/vmware-usbarbitrator
+killall --wait /opt/vmware/bin/vmware-usbarbitrator 
+/opt/vmware/bin/vmware-networks --stop 
+modprobe -r vsock vmci vmmon vmblock vmnet
+;;
+esac

@@ -1,0 +1,10 @@
+[Unit]
+Description=VMware daemon
+[Service]
+ExecStart=/usr/local/bin/vmware start
+ExecStop=/usr/local/bin/vmware stop
+#PIDFile=/var/lock/vmware/vmware.lck
+TimeoutSec=0
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
