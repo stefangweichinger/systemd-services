@@ -1,0 +1,10 @@
+[Unit]
+Description=network bridge for KVM
+After=network.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/kvm-bridge start
+ExecStop=/usr/local/bin/kvm-bridge stop
+[Install]
+WantedBy=multi-user.target

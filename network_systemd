@@ -1,0 +1,8 @@
+interface=eth0
+address=172.32.99.12
+netmask=255.255.255.0
+broadcast=172.32.99.255
+gateway=172.32.99.250
+bridge_name=br0
+tap_name=qtap0
+user=sgw

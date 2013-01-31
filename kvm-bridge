@@ -1,0 +1,26 @@
+#!/bin/sh
+source /etc/conf.d/network_systemd
+case "${1}" in
+    start)
+        /sbin/brctl addbr ${bridge_name}
+        /usr/bin/tunctl -b -u ${user} -t ${tap_name}
+        /bin/ifconfig ${bridge_name} ${address} netmask ${netmask} up
+        /bin/ifconfig ${interface} up
+        /bin/ifconfig ${tap_name} up 0.0.0.0 promisc
+        /sbin/brctl addif ${bridge_name} ${tap_name} ${interface}
+        /sbin/sysctl net.ipv4.conf.${bridge_name}.forwarding=1
+        #/sbin/iptables -t nat -A POSTROUTING -o ${interface} -j MASQUERADE
+        /bin/ip route add default via ${gateway}
+        ;;
+    stop)
+        /bin/ip route del default via ${gateway}
+        /sbin/sysctl net.ipv4.conf.${bridge_name}.forwarding=0
+        /bin/ifconfig ${tap_name} down
+        /sbin/brctl delif ${bridge_name} ${tap_name}
+        /usr/bin/tunctl -d ${tap_name}
+        /bin/ifconfig ${bridge_name} down
+        /bin/ifconfig ${interface} down
+        /sbin/brctl delbr ${bridge_name}
+        #/sbin/iptables -t nat -D POSTROUTING -o ${interface} -j MASQUERADE
+        ;;
+esac
